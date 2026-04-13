@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
 const serverless = require('serverless-http');
+const ejs = require('ejs'); // Force Netlify to bundle EJS
 
 const app = express();
 
