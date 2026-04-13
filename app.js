@@ -11,14 +11,18 @@ const app = express();
 
 // Connect to MongoDB robustly for serverless functions
 app.use(async (req, res, next) => {
-  if (process.env.MONGODB_URI && mongoose.connection.readyState !== 1) {
+  if (!process.env.MONGODB_URI || process.env.MONGODB_URI === 'undefined') {
+    return res.status(500).send("<h1>FATAL ERROR: MONGODB_URI is missing from Netlify's Environment Variables!</h1><p>Please ensure you added the variable correctly and triggered a new deploy.</p>");
+  }
+
+  if (mongoose.connection.readyState !== 1) {
     try {
       await mongoose.connect(process.env.MONGODB_URI, {
         serverSelectionTimeoutMS: 5000 // fail fast instead of buffering for 10s
       });
       console.log('Connected to MongoDB');
     } catch (err) {
-      console.error('MongoDB connection error:', err);
+      return res.status(500).send("<h1>FATAL ERROR: Could not connect to Atlas Database!</h1><p>Error details: " + err.message + "</p><p>This means either your password is wrong, or MongoDB Atlas Network Access is blocking the connection.</p>");
     }
   }
   next();
