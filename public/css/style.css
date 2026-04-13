@@ -696,9 +696,13 @@ input, select, textarea, button {
   .hero { flex-direction: column; gap: 1.5rem; text-align: center; padding: 3rem 1.5rem; }
   .doctor-banner { padding: 1.5rem; }
   .doctor-stats { gap: .75rem; }
-  .appt-card { flex-direction: column; align-items: flex-start; }
-  .appt-actions { width: 100%; justify-content: flex-start; }
+  .appt-card { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  .appt-actions { width: 100%; flex-direction: row !important; flex-wrap: wrap; justify-content: flex-start; gap: 0.5rem; }
   .form-actions { flex-direction: column; }
   .form-actions .btn-doctor-primary,
   .form-actions .btn-secondary { width: 100%; text-align: center; }
+  
+  .report-card { flex-direction: column; align-items: flex-start; gap: 1rem; padding: 1.25rem; }
+  .report-card > div:last-child { flex-direction: row !important; width: 100%; gap: 10px !important; }
+  .report-card > div:last-child a { flex: 1; justify-content: center; text-align: center; }
 }
