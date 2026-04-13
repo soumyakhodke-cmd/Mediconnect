@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upload Report – MediConnect</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav class="navbar doctor-navbar">
+    <div class="nav-container">
+      <a class="nav-brand" href="/doctor/dashboard">
+        <span class="brand-icon">🏥</span> MediConnect <span class="portal-badge">Doctor Portal</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="/doctor/dashboard">Dashboard</a></li>
+        <li><a href="/doctor/reports">Uploaded Reports</a></li>
+        <li><a href="/doctor/logout" class="btn-nav-logout">Logout</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="page-container">
+    <div class="page-header">
+      <a href="/doctor/dashboard" class="back-link">← Back to Dashboard</a>
+      <h1>📤 Upload Patient Report</h1>
+    </div>
+
+    <!-- Patient Info Card -->
+    <div class="patient-info-card">
+      <div class="patient-info-avatar">
+        <%= appt.patientName.split(' ').map(w=>w[0]).slice(0,2).join('') %>
+      </div>
+      <div class="patient-info-details">
+        <h3><%= appt.patientName %></h3>
+        <p>📧 <%= appt.patientEmail %></p>
+        <p>📅 Appointment: <%= appt.date %> at <%= appt.time %></p>
+        <% if (appt.reason) { %><p>📝 Reason: <%= appt.reason %></p><% } %>
+        <p>Status: <span class="appt-status status-<%= appt.status.toLowerCase() %>"><%= appt.status %></span></p>
+      </div>
+    </div>
+
+    <% if (success) { %><div class="alert alert-success"><%= success %></div><% } %>
+    <% if (error)   { %><div class="alert alert-error"><%= error %></div><% } %>
+
+    <!-- Upload Form -->
+    <div class="upload-card">
+      <form action="/doctor/appointment/<%= appt.id %>/upload" method="POST" enctype="multipart/form-data" class="upload-form">
+        <div class="form-group">
+          <label>Select Report File</label>
+          <div class="file-drop-area" id="dropArea">
+            <div class="file-drop-icon">📁</div>
+            <p>Drag & drop a file here, or <label for="reportFile" class="file-label-link">browse</label></p>
+            <small>Accepted: PDF, JPG, PNG · Max size: 10 MB</small>
+            <input type="file" name="report" id="reportFile" accept=".pdf,.jpg,.jpeg,.png" required class="file-input">
+          </div>
+          <div id="filePreview" class="file-preview hidden"></div>
+        </div>
+
+        <div class="form-group">
+          <label>Doctor's Notes <span class="optional">(optional)</span></label>
+          <textarea name="notes" rows="4" placeholder="Add any notes, diagnosis, or instructions for the patient..."></textarea>
+        </div>
+
+        <div class="form-actions">
+          <a href="/doctor/dashboard" class="btn-secondary">Cancel</a>
+          <button type="submit" class="btn-doctor-primary">📤 Upload Report</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-bottom"><p>© 2024 MediConnect Doctor Portal.</p></div>
+  </footer>
+
+  <script>
+    const input    = document.getElementById('reportFile');
+    const preview  = document.getElementById('filePreview');
+    const dropArea = document.getElementById('dropArea');
+
+    input.addEventListener('change', showPreview);
+
+    function showPreview() {
+      if (input.files && input.files[0]) {
+        const f = input.files[0];
+        preview.classList.remove('hidden');
+        preview.innerHTML = `<span>✅ Selected: <strong>${f.name}</strong> (${(f.size/1024).toFixed(1)} KB)</span>`;
+        dropArea.style.borderColor = 'var(--doctor-primary)';
+      }
+    }
+
+    // Drag-and-drop
+    dropArea.addEventListener('dragover', e => { e.preventDefault(); dropArea.classList.add('drag-over'); });
+    dropArea.addEventListener('dragleave', () => dropArea.classList.remove('drag-over'));
+    dropArea.addEventListener('drop', e => {
+      e.preventDefault();
+      dropArea.classList.remove('drag-over');
+      input.files = e.dataTransfer.files;
+      showPreview();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MediConnect – Home</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <%- include('partials/navbar') %>
+
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Your Health, <span class="highlight">Our Priority</span></h1>
+      <p>Book appointments with top doctors, manage your health records, and stay on top of your wellness journey — all in one place.</p>
+      <div class="hero-buttons">
+        <% if (user) { %>
+          <a href="/appointments/book" class="btn-primary">Book Appointment</a>
+          <a href="/appointments/my"   class="btn-secondary">My Appointments</a>
+        <% } else { %>
+          <a href="/auth/register" class="btn-primary">Get Started</a>
+          <a href="/auth/login"    class="btn-secondary">Patient Login</a>
+        <% } %>
+      </div>
+    </div>
+    <div class="hero-image">🏥</div>
+  </section>
+
+  <section class="features">
+    <h2>Why Choose MediConnect?</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">📅</div>
+        <h3>Easy Booking</h3>
+        <p>Schedule appointments with specialists in seconds, anytime, anywhere.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📋</div>
+        <h3>Medical Reports</h3>
+        <p>Access your lab results and reports uploaded directly by your doctor.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🩺</div>
+        <h3>Top Doctors</h3>
+        <p>Connect with verified specialists from leading hospitals across India.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔒</div>
+        <h3>Secure & Private</h3>
+        <p>Your health data is safe with role-based access for patients and doctors.</p>
+      </div>
+    </div>
+  </section>
+
+  <%- include('partials/footer') %>
+  <script src="/js/main.js"></script>
+</body>
+</html>

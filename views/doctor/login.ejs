@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Doctor Login – MediConnect</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <a class="nav-brand" href="/">
+        <span class="brand-icon">🏥</span> MediConnect
+      </a>
+      <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/auth/login" class="btn-nav">Patient Login</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="auth-container">
+    <div class="auth-card doctor-auth-card">
+      <div class="auth-header">
+        <div class="auth-icon doctor-auth-icon">🩺</div>
+        <h2>Doctor Portal</h2>
+        <p>Authorised medical staff only. Use your MediConnect doctor credentials.</p>
+      </div>
+
+      <% if (error) { %>
+        <div class="alert alert-error"><%= error %></div>
+      <% } %>
+
+      <form action="/doctor/login" method="POST" class="auth-form">
+        <div class="form-group">
+          <label>Doctor Email</label>
+          <input type="email" name="email" placeholder="yourname@mediconnect.in" required>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" name="password" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="btn-full btn-doctor">Sign In to Doctor Portal</button>
+      </form>
+
+      <div class="auth-footer">
+        <p>Are you a patient? <a href="/auth/login">Patient Login →</a></p>
+      </div>
+
+      <div class="doctor-notice">
+        <p>🔒 This portal is restricted to registered MediConnect doctors only. Unauthorised access attempts are logged.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-bottom"><p>© 2024 MediConnect. All rights reserved.</p></div>
+  </footer>
+</body>
+</html>

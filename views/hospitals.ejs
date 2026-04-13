@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hospitals – MediConnect</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <%- include('partials/navbar') %>
+  <div class="page-container">
+    <div class="page-header">
+      <h1>🏥 Partner Hospitals</h1>
+      <p>We partner with India's leading hospitals to bring you the best care.</p>
+    </div>
+    <div class="hospitals-grid">
+      <% [
+        { name:'Apollo Hospital',   city:'Delhi',     specialty:'Multi-specialty', icon:'🏥' },
+        { name:'Fortis Hospital',   city:'Gurgaon',   specialty:'Neurology & Cardiology', icon:'🏨' },
+        { name:'AIIMS',             city:'New Delhi',  specialty:'Government Premier', icon:'🎓' },
+        { name:'Medanta',           city:'Gurugram',  specialty:'Orthopedics & Cancer', icon:'⚕️' },
+        { name:'Manipal Hospital',  city:'Bangalore', specialty:'Dermatology & Oncology', icon:'🌿' }
+      ].forEach(h => { %>
+        <div class="hospital-card">
+          <div class="hospital-icon"><%= h.icon %></div>
+          <h3><%= h.name %></h3>
+          <p class="hospital-city">📍 <%= h.city %></p>
+          <p class="hospital-specialty"><%= h.specialty %></p>
+          <a href="/appointments/book" class="btn-sm">Book Here</a>
+        </div>
+      <% }); %>
+    </div>
+  </div>
+  <%- include('partials/footer') %>
+</body>
+</html>

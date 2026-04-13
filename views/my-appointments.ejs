@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Appointments – MediConnect</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <%- include('partials/navbar') %>
+  <div class="page-container">
+    <div class="page-header">
+      <h1>My Health Dashboard</h1>
+      <p>Track your appointments and access your medical reports.</p>
+    </div>
+
+    <!-- ── Appointments ── -->
+    <section class="section">
+      <h2>📅 My Appointments</h2>
+      <% if (appointments.length === 0) { %>
+        <div class="empty-state">
+          <p>No appointments yet. <a href="/appointments/book">Book your first appointment →</a></p>
+        </div>
+      <% } else { %>
+        <div class="appt-list">
+          <% appointments.slice().reverse().forEach(a => { %>
+            <div class="appt-card">
+              <div class="appt-meta">
+                <div class="appt-doc-avatar"><%= a.doctorName.split(' ').map(w=>w[0]).slice(1,3).join('') %></div>
+                <div class="appt-details">
+                  <strong><%= a.doctorName %></strong>
+                  <span><%= a.specialty %> · <%= a.hospital %></span>
+                  <small>📅 <%= a.date %> at <%= a.time %></small>
+                  <% if (a.reason) { %><small>📝 <%= a.reason %></small><% } %>
+                </div>
+              </div>
+              <div style="display: flex; gap: 10px; align-items: center;">
+                <div class="appt-status status-<%= a.status.toLowerCase() %>"><%= a.status %></div>
+                <% if (a.status === 'Pending') { %>
+                  <form action="/appointments/cancel/<%= a.id %>" method="POST" style="margin:0;">
+                    <button type="submit" class="btn-download" style="background:#dc3545; border:none; padding: 4px 8px; font-size:0.8rem; cursor:pointer;" onclick="return confirm('Are you sure you want to cancel this appointment?');">🗑 Cancel</button>
+                  </form>
+                <% } %>
+              </div>
+            </div>
+          <% }); %>
+        </div>
+      <% } %>
+    </section>
+
+    <!-- ── Medical Reports ── -->
+    <section class="section">
+      <h2>📋 My Medical Reports</h2>
+      <% if (reports.length === 0) { %>
+        <div class="empty-state">
+          <p>No reports uploaded yet. Your doctor will upload reports after your appointment.</p>
+        </div>
+      <% } else { %>
+        <div class="reports-list">
+          <% reports.slice().reverse().forEach(r => { %>
+            <div class="report-card">
+              <div class="report-icon">
+                <% if (r.filename.match(/\.(jpg|jpeg|png)$/i)) { %>🖼️<% } else { %>📄<% } %>
+              </div>
+              <div class="report-details">
+                <strong><%= r.originalName %></strong>
+                <span>Uploaded by <strong><%= r.doctorName %></strong> (<%= r.specialty %>)</span>
+                <% if (r.notes) { %><small>📝 <%= r.notes %></small><% } %>
+                <small>🕐 <%= new Date(r.uploadedAt).toLocaleDateString('en-IN', {day:'numeric',month:'short',year:'numeric'}) %></small>
+              </div>
+              <div style="display: flex; gap: 10px; flex-direction: column;">
+                <a href="<%= r.fileUrl %>" target="_blank" class="btn-download">
+                  <% if (r.filename.match(/\.(jpg|jpeg|png)$/i)) { %>🔍 View<% } else { %>⬇ Download<% } %>
+                </a>
+                <a href="mailto:?subject=My Medical Report&body=Here is my medical report uploaded by <%= r.doctorName %>: http://localhost:3000<%= r.fileUrl %>" class="btn-download" style="background: #25D366; color: white; border: none;">
+                  📤 Share
+                </a>
+              </div>
+            </div>
+          <% }); %>
+        </div>
+      <% } %>
+    </section>
+
+    <div class="fab-area">
+      <a href="/appointments/book" class="btn-primary">+ Book New Appointment</a>
+    </div>
+  </div>
+  <%- include('partials/footer') %>
+</body>
+</html>

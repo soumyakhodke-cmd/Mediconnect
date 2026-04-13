@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Patient Login – MediConnect</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <%- include('partials/navbar') %>
+  <div class="auth-container">
+    <div class="auth-card">
+      <div class="auth-header">
+        <div class="auth-icon">👤</div>
+        <h2>Patient Login</h2>
+        <p>Welcome back! Please sign in to your account.</p>
+      </div>
+
+      <% if (error) { %>
+        <div class="alert alert-error"><%= error %></div>
+      <% } %>
+
+      <form action="/auth/login" method="POST" class="auth-form">
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" name="email" placeholder="your@email.com" required>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" name="password" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="btn-full">Sign In</button>
+      </form>
+
+      <div class="auth-footer">
+        <p>Don't have an account? <a href="/auth/register">Register here</a></p>
+        <p class="divider">─── or ───</p>
+        <p>Are you a doctor? <a href="/doctor/login" class="doctor-link">🩺 Doctor Login</a></p>
+      </div>
+    </div>
+  </div>
+  <%- include('partials/footer') %>
+</body>
+</html>

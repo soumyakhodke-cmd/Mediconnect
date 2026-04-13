@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Uploaded Reports – MediConnect</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav class="navbar doctor-navbar">
+    <div class="nav-container">
+      <a class="nav-brand" href="/doctor/dashboard">
+        <span class="brand-icon">🏥</span> MediConnect <span class="portal-badge">Doctor Portal</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="/doctor/dashboard">Dashboard</a></li>
+        <li><a href="/doctor/reports" class="active">Uploaded Reports</a></li>
+        <li><a href="/doctor/logout" class="btn-nav-logout">Logout (<%= doctor.name.split(' ').slice(0,2).join(' ') %>)</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="page-container">
+    <div class="page-header">
+      <h1>📋 Reports You've Uploaded</h1>
+      <p>All medical reports uploaded for your patients.</p>
+    </div>
+
+    <% if (reports.length === 0) { %>
+      <div class="empty-state">
+        <p>You haven't uploaded any reports yet. Go to <a href="/doctor/dashboard">Dashboard</a> to upload reports for patients.</p>
+      </div>
+    <% } else { %>
+      <div class="reports-list">
+        <% reports.slice().reverse().forEach(r => { %>
+          <div class="report-card">
+            <div class="report-icon">
+              <% if (r.filename.match(/\.(jpg|jpeg|png)$/i)) { %>🖼️<% } else { %>📄<% } %>
+            </div>
+            <div class="report-details">
+              <strong><%= r.originalName %></strong>
+              <span>Patient: <strong><%= r.patientName %></strong></span>
+              <% if (r.notes) { %><small>📝 <%= r.notes %></small><% } %>
+              <small>🕐 Uploaded <%= new Date(r.uploadedAt).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}) %></small>
+            </div>
+            <a href="<%= r.fileUrl %>" target="_blank" class="btn-download">
+              <% if (r.filename.match(/\.(jpg|jpeg|png)$/i)) { %>🔍 View<% } else { %>⬇ Download<% } %>
+            </a>
+          </div>
+        <% }); %>
+      </div>
+    <% } %>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-bottom"><p>© 2024 MediConnect Doctor Portal.</p></div>
+  </footer>
+</body>
+</html>
