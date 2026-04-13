@@ -322,6 +322,8 @@ input, select, textarea, button {
 .form-group input,
 .form-group select,
 .form-group textarea {
+  width: 100%;
+  max-width: 100%;
   padding: .7rem 1rem;
   border: 1.5px solid var(--gray-200);
   border-radius: var(--radius-sm);
