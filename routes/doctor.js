@@ -79,7 +79,7 @@ router.post('/appointment/:id/status', requireDoctor, async (req, res) => {
       await appt.save();
 
       if (appt.patientEmail && ['Confirmed', 'Completed', 'Cancelled'].includes(status)) {
-        sendEmail(
+        await sendEmail(
           appt.patientEmail,
           `Appointment ${status}`,
           `Hello ${appt.patientName},\n\nYour appointment with ${req.doctor.name} on ${appt.date} at ${appt.time} has been ${status}.\n\nRegards,\nMediConnect System`
@@ -130,7 +130,7 @@ router.post('/appointment/:id/upload', requireDoctor, upload.single('report'), a
     await report.save();
 
     if (appt.patientEmail) {
-      sendEmail(
+      await sendEmail(
         appt.patientEmail,
         'New Medical Report Uploaded',
         `Hello ${appt.patientName},\n\nDr. ${req.doctor.name} has uploaded a medical report for your appointment on ${appt.date}.\n\nPlease log in to MediConnect to view and download your report.\n\nRegards,\nMediConnect System`

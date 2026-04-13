@@ -52,7 +52,7 @@ router.post('/book', requirePatient, async (req, res) => {
       const doctorsList = require('../data/doctors.json');
       const docData = doctorsList.find(d => d.id === doctor.id);
       if (docData && docData.email) {
-        sendEmail(
+        await sendEmail(
           docData.email,
           'New Appointment Booking',
           `Hello ${doctor.name},\n\nYou have a new appointment booked by patient ${req.user.name} on ${date} at ${time}.\nReason for visit: ${reason || 'Not specified'}\n\nPlease confirm or cancel it via your dashboard.\n\nRegards,\nMediConnect System`
