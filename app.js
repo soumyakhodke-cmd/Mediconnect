@@ -9,12 +9,20 @@ const ejs = require('ejs'); // Force Netlify to bundle EJS
 
 const app = express();
 
-// Connect to MongoDB
-if (process.env.MONGODB_URI && process.env.MONGODB_URI !== 'your_mongodb_atlas_connection_string_here') {
-  mongoose.connect(process.env.MONGODB_URI)
-    .then(() => console.log('Connected to MongoDB'))
-    .catch(err => console.error('MongoDB connection error:', err));
-}
+// Connect to MongoDB robustly for serverless functions
+app.use(async (req, res, next) => {
+  if (process.env.MONGODB_URI && mongoose.connection.readyState !== 1) {
+    try {
+      await mongoose.connect(process.env.MONGODB_URI, {
+        serverSelectionTimeoutMS: 5000 // fail fast instead of buffering for 10s
+      });
+      console.log('Connected to MongoDB');
+    } catch (err) {
+      console.error('MongoDB connection error:', err);
+    }
+  }
+  next();
+});
 
 // Middleware
 app.use(express.urlencoded({ extended: true }));
