@@ -48,9 +48,8 @@ router.post('/book', requirePatient, async (req, res) => {
     });
     await appt.save();
 
-    const doctorsFile = path.join(__dirname, '..', 'data', 'doctors.json');
     try {
-      const doctorsList = JSON.parse(fs.readFileSync(doctorsFile, 'utf8'));
+      const doctorsList = require('../data/doctors.json');
       const docData = doctorsList.find(d => d.id === doctor.id);
       if (docData && docData.email) {
         sendEmail(

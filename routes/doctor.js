@@ -78,7 +78,7 @@ router.post('/appointment/:id/status', requireDoctor, async (req, res) => {
       appt.status = status; // Confirmed, Cancelled
       await appt.save();
 
-      if (appt.patientEmail && (status === 'Confirmed' || status === 'Cancelled')) {
+      if (appt.patientEmail && ['Confirmed', 'Completed', 'Cancelled'].includes(status)) {
         sendEmail(
           appt.patientEmail,
           `Appointment ${status}`,
