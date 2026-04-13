@@ -21,7 +21,7 @@ router.post('/register', async (req, res) => {
     res.redirect('/');
   } catch (err) {
     console.error(err);
-    res.render('register', { error: 'Error registering user.' });
+    res.render('register', { error: 'Error registering user Details: ' + (err.message || err.toString()) });
   }
 });
 
@@ -42,7 +42,7 @@ router.post('/login', async (req, res) => {
     res.redirect('/');
   } catch (err) {
     console.error(err);
-    res.render('login', { error: 'Error logging in.' });
+    res.render('login', { error: 'Error logging in Details: ' + (err.message || err.toString()) });
   }
 });
 
