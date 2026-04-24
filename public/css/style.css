@@ -67,22 +67,23 @@ input, select, textarea, button {
 /* ── Navbar ────────────────────────────────────────────────────────────────── */
 /* ── Floating Capsule Navbar ───────────────────────────────────────────────── */
 .navbar {
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
   position: fixed;
-  top: 1.5rem;
+  top: 1rem;
   left: 50%;
   transform: translateX(-50%);
-  width: 90%;
+  width: 94%;
   max-width: 1100px;
-  height: 64px;
-  border-radius: var(--radius-pill);
+  min-height: 64px;
+  border-radius: 32px;
   z-index: 1000;
   display: flex;
   align-items: center;
+  padding: 0.5rem 0;
 }
 
 .nav-container {
@@ -91,27 +92,74 @@ input, select, textarea, button {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap; /* Allows wrapping on very small screens */
+  gap: 10px;
 }
 .nav-brand {
-  font-size: 1.4rem;
+  font-size: 1.25rem;
   font-weight: 800;
   font-family: 'Outfit', sans-serif;
   color: var(--gray-900);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
 }
-.brand-icon { color: var(--primary); }
+.brand-icon { color: var(--primary); width: 24px; height: 24px; }
 
 .nav-links {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
+  gap: 1rem;
 }
 .nav-links a {
-  font-size: .95rem;
+  font-size: .85rem;
   font-weight: 600;
   color: var(--gray-700);
-  transition: color .2s;
+  transition: all .2s;
 }
 .nav-links a:hover { color: var(--primary); text-decoration: none; }
+
+/* ── Mobile Fixes ────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .navbar {
+    top: 0.5rem;
+    padding: 0.75rem 0;
+    border-radius: 24px;
+  }
+  .nav-container {
+    justify-content: center;
+    padding: 0 1rem;
+  }
+  .nav-brand {
+    font-size: 1.1rem;
+    width: 100%;
+    justify-content: center;
+    margin-bottom: 4px;
+  }
+  .nav-links {
+    gap: 0.75rem;
+    width: 100%;
+    justify-content: center;
+  }
+  .nav-links a {
+    font-size: 0.8rem;
+  }
+  
+  .hero-content h1 {
+    font-size: 2.5rem;
+  }
+  .hero-content p {
+    font-size: 1.1rem;
+  }
+  
+  .page-container {
+    padding-top: 11rem; /* More space for the stacked mobile navbar */
+  }
+  .hero {
+    padding-top: 12rem;
+  }
+}
 
 .btn-nav {
   background: var(--primary);
