@@ -86,6 +86,20 @@ router.post('/cancel/:id', requirePatient, async (req, res) => {
   res.redirect('/appointments/my');
 });
 
+router.post('/delete/:id', requirePatient, async (req, res) => {
+  try {
+    // Only allow patients to delete cancelled or completed appointments from their view
+    await Appointment.deleteOne({ 
+      _id: req.params.id, 
+      patientEmail: req.user.email,
+      status: { $in: ['Cancelled', 'Completed'] } 
+    });
+  } catch (err) {
+    console.error(err);
+  }
+  res.redirect('/appointments/my');
+});
+
 router.get('/my', requirePatient, async (req, res) => {
   try {
     const appointments = await Appointment.find({ patientEmail: req.user.email }).sort({ bookedAt: -1 });

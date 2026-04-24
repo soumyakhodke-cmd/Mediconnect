@@ -1,35 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hospitals – MediConnect</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Partner Institutions – MediConnect</title>
   <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
   <%- include('partials/navbar') %>
+
   <div class="page-container">
-    <div class="page-header">
-      <h1>🏥 Partner Hospitals</h1>
-      <p>We partner with India's leading hospitals to bring you the best care.</p>
+    <div class="page-header reveal">
+      <h1>Premium Network</h1>
+      <p>Consult with experts from India's most advanced medical institutions.</p>
     </div>
-    <div class="hospitals-grid">
+
+    <!-- Enhanced Search Section -->
+    <div class="search-container reveal">
+      <div class="search-input-wrapper">
+        <i data-lucide="search"></i>
+        <input type="text" id="hospitalSearch" class="search-bar" placeholder="Find a hospital, city, or specialty...">
+      </div>
+    </div>
+
+    <div class="hospitals-grid" id="hospitalsGrid">
       <% [
-        { name:'Apollo Hospital',   city:'Delhi',     specialty:'Multi-specialty', icon:'🏥' },
-        { name:'Fortis Hospital',   city:'Gurgaon',   specialty:'Neurology & Cardiology', icon:'🏨' },
-        { name:'AIIMS',             city:'New Delhi',  specialty:'Government Premier', icon:'🎓' },
-        { name:'Medanta',           city:'Gurugram',  specialty:'Orthopedics & Cancer', icon:'⚕️' },
-        { name:'Manipal Hospital',  city:'Bangalore', specialty:'Dermatology & Oncology', icon:'🌿' }
+        { name:'Apollo Hospital',   city:'Delhi',     specialty:'Multi-specialty', icon:'activity', address: 'Sarita Vihar, Delhi-Mathura Road, New Delhi, 110076' },
+        { name:'Fortis Hospital',   city:'Gurgaon',   specialty:'Neurology & Cardiology', icon:'heart-pulse', address: 'Sector 44, opposite HUDA City Centre, Gurugram, Haryana 122002' },
+        { name:'AIIMS',             city:'New Delhi',  specialty:'General & Research', icon:'graduation-cap', address: 'Ansari Nagar, New Delhi, 110029' },
+        { name:'Medanta',           city:'Gurugram',  specialty:'Orthopedics & Cancer', icon:'stethscope', address: 'CH Baktawar Singh Rd, Medicity, Islampur Colony, Sector 38, Gurugram, Haryana 122001' },
+        { name:'Manipal Hospital',  city:'Bangalore', specialty:'Dermatology & Oncology', icon:'leaf', address: '98, HAL Old Airport Rd, Kodihalli, Bengaluru, Karnataka 560017' }
       ].forEach(h => { %>
-        <div class="hospital-card">
-          <div class="hospital-icon"><%= h.icon %></div>
+        <div class="hospital-card reveal" data-name="<%= h.name %>" data-city="<%= h.city %>" data-specialty="<%= h.specialty %>">
+          <div class="hospital-icon">
+            <i data-lucide="<%= h.icon %>"></i>
+          </div>
           <h3><%= h.name %></h3>
-          <p class="hospital-city">📍 <%= h.city %></p>
+          <p class="hospital-city"><i data-lucide="map-pin" style="width: 14px; vertical-align: middle;"></i> <%= h.city %></p>
+          <div class="hospital-address" style="font-size: 0.85rem; color: var(--gray-500); margin: 0.5rem 0; line-height: 1.4; display: flex; gap: 6px; align-items: flex-start;">
+            <i data-lucide="navigation" style="width: 12px; min-width: 12px; margin-top: 3px;"></i>
+            <span><%= h.address %></span>
+          </div>
           <p class="hospital-specialty"><%= h.specialty %></p>
-          <a href="/appointments/book" class="btn-sm">Book Here</a>
+          <a href="/appointments/book" class="btn-sm">Book Appointment</a>
         </div>
       <% }); %>
     </div>
   </div>
+
   <%- include('partials/footer') %>
+
+  <script>
+    const reveal = () => {
+      const reveals = document.querySelectorAll('.reveal');
+      reveals.forEach(el => {
+        const windowHeight = window.innerHeight;
+        const revealTop = el.getBoundingClientRect().top;
+        if (revealTop < windowHeight - 50) el.classList.add('active');
+      });
+    };
+
+    window.addEventListener('scroll', reveal);
+    window.addEventListener('load', reveal);
+
+    document.addEventListener('DOMContentLoaded', () => {
+      if (window.lucide) lucide.createIcons();
+      setTimeout(reveal, 100);
+
+      const searchInput = document.getElementById('hospitalSearch');
+      const hospitalCards = document.querySelectorAll('.hospital-card');
+
+      searchInput.addEventListener('input', (e) => {
+        const term = e.target.value.toLowerCase();
+        hospitalCards.forEach(card => {
+          const text = card.innerText.toLowerCase();
+          card.style.display = text.includes(term) ? 'flex' : 'none';
+        });
+        reveal();
+      });
+    });
+  </script>
 </body>
 </html>

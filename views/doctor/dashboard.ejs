@@ -1,33 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Doctor Dashboard – MediConnect</title>
   <link rel="stylesheet" href="/css/style.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
-  <!-- Doctor Navbar -->
+  <!-- Doctor Navbar (Floating Capsule) -->
   <nav class="navbar doctor-navbar">
     <div class="nav-container">
       <a class="nav-brand" href="/doctor/dashboard">
-        <span class="brand-icon">🏥</span> MediConnect <span class="portal-badge">Doctor Portal</span>
+        <i data-lucide="activity" class="brand-icon"></i> MediConnect <span class="portal-badge" style="background: var(--primary); color: white;">Doctor Portal</span>
       </a>
       <ul class="nav-links">
         <li><a href="/doctor/dashboard" class="active">Dashboard</a></li>
-        <li><a href="/doctor/reports">Uploaded Reports</a></li>
-        <li><a href="/doctor/logout" class="btn-nav-logout">Logout (<%= doctor.name.split(' ').slice(0,2).join(' ') %>)</a></li>
+        <li><a href="/doctor/reports">Reports</a></li>
+        <li><a href="/doctor/logout" class="btn-nav-logout" style="border-radius: var(--radius-pill); padding: 0.5rem 1.2rem;">Logout (<%= doctor.name.split(' ').slice(0,1) %>)</a></li>
       </ul>
     </div>
   </nav>
 
   <div class="page-container">
     <!-- Doctor Profile Banner -->
-    <div class="doctor-banner">
+    <div class="doctor-banner reveal">
       <div class="doctor-banner-avatar"><%= doctor.avatar %></div>
       <div class="doctor-banner-info">
         <h1><%= doctor.name %></h1>
         <p><%= doctor.specialty %> · <%= doctor.hospital %></p>
-        <p class="doctor-email">📧 <%= doctor.email %></p>
+        <p class="doctor-email"><i data-lucide="mail" style="width:14px; vertical-align:middle;"></i> <%= doctor.email %></p>
       </div>
       <div class="doctor-stats">
         <div class="stat-box">
@@ -46,8 +48,8 @@
     </div>
 
     <!-- Appointments Section -->
-    <section class="section">
-      <h2>📋 Patient Appointments</h2>
+    <section class="section reveal">
+      <h2 style="margin-bottom: 2rem;"><i data-lucide="users" style="vertical-align:middle; margin-right:8px;"></i> Patient Appointments</h2>
 
       <% if (appointments.length === 0) { %>
         <div class="empty-state">
@@ -57,10 +59,10 @@
         <!-- Filter tabs -->
         <div class="filter-tabs">
           <button class="tab-btn active" data-filter="all">All (<%= appointments.length %>)</button>
-          <button class="tab-btn" data-filter="pending">Pending (<%= appointments.filter(a=>a.status==='Pending').length %>)</button>
-          <button class="tab-btn" data-filter="confirmed">Confirmed (<%= appointments.filter(a=>a.status==='Confirmed').length %>)</button>
-          <button class="tab-btn" data-filter="completed">Completed (<%= appointments.filter(a=>a.status==='Completed').length %>)</button>
-          <button class="tab-btn" data-filter="cancelled">Cancelled (<%= appointments.filter(a=>a.status==='Cancelled').length %>)</button>
+          <button class="tab-btn" data-filter="pending">Pending</button>
+          <button class="tab-btn" data-filter="confirmed">Confirmed</button>
+          <button class="tab-btn" data-filter="completed">Completed</button>
+          <button class="tab-btn" data-filter="cancelled">Cancelled</button>
         </div>
 
         <div class="appt-list" id="apptList">
@@ -72,17 +74,15 @@
                 </div>
                 <div class="appt-details">
                   <strong><%= a.patientName %></strong>
-                  <span>📧 <%= a.patientEmail %></span>
-                  <small>📅 <%= a.date %> at <%= a.time %></small>
-                  <% if (a.reason) { %><small>📝 Reason: <%= a.reason %></small><% } %>
-                  <small class="booked-at">Booked on <%= new Date(a.bookedAt).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}) %></small>
+                  <span><i data-lucide="mail" style="width:12px;"></i> <%= a.patientEmail %></span>
+                  <small><i data-lucide="calendar" style="width:12px;"></i> <%= a.date %> at <%= a.time %></small>
+                  <% if (a.reason) { %><small><i data-lucide="message-square" style="width:12px;"></i> <%= a.reason %></small><% } %>
                 </div>
               </div>
 
               <div class="appt-actions">
                 <div class="appt-status status-<%= a.status.toLowerCase() %>"><%= a.status %></div>
 
-                <!-- Status update form -->
                 <form action="/doctor/appointment/<%= a.id %>/status" method="POST" class="status-form">
                   <select name="status" onchange="this.form.submit()" class="status-select">
                     <option value="Pending"   <%= a.status==='Pending'   ? 'selected':'' %>>Pending</option>
@@ -92,10 +92,19 @@
                   </select>
                 </form>
 
-                <!-- Upload report button -->
-                <a href="/doctor/appointment/<%= a.id %>/upload" class="btn-upload">
-                  📤 Upload Report
-                </a>
+                <div style="display: flex; gap: 8px;">
+                  <a href="/doctor/appointment/<%= a.id %>/upload" class="btn-upload" title="Upload Report">
+                    <i data-lucide="upload-cloud" style="width:14px;"></i>
+                  </a>
+                  
+                  <% if (['Cancelled', 'Completed'].includes(a.status)) { %>
+                    <form action="/doctor/appointment/delete/<%= a.id %>" method="POST" style="margin:0;">
+                      <button type="submit" class="btn-upload" style="background: var(--danger-light); color: var(--danger);" title="Delete Record" onclick="return confirm('Delete this record?');">
+                        <i data-lucide="trash-2" style="width:14px;"></i>
+                      </button>
+                    </form>
+                  <% } %>
+                </div>
               </div>
             </div>
           <% }); %>
@@ -105,61 +114,38 @@
   </div>
 
   <footer class="footer">
-    <div class="footer-bottom"><p>© 2024 MediConnect Doctor Portal. All rights reserved.</p></div>
+    <div class="footer-bottom"><p>© 2026 MediConnect Doctor Portal. All rights reserved.</p></div>
   </footer>
 
-  <script src="/js/main.js"></script>
   <script>
-    // Filter tabs
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        const filter = btn.dataset.filter;
-        document.querySelectorAll('.doctor-appt-card').forEach(card => {
-          card.style.display = (filter === 'all' || card.dataset.status === filter) ? 'flex' : 'none';
+    const reveal = () => {
+      const reveals = document.querySelectorAll('.reveal');
+      reveals.forEach(el => {
+        const windowHeight = window.innerHeight;
+        const revealTop = el.getBoundingClientRect().top;
+        if (revealTop < windowHeight - 80) el.classList.add('active');
+      });
+    };
+
+    window.addEventListener('scroll', reveal);
+    window.addEventListener('load', reveal);
+
+    document.addEventListener('DOMContentLoaded', () => {
+      if (window.lucide) lucide.createIcons();
+      setTimeout(reveal, 100);
+
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          const filter = btn.dataset.filter;
+          document.querySelectorAll('.doctor-appt-card').forEach(card => {
+            card.style.display = (filter === 'all' || card.dataset.status === filter) ? 'flex' : 'none';
+          });
+          reveal();
         });
       });
     });
-    // Auto-refresh notification
-    let currentApptCount = <%= appointments.length %>;
-    
-    // Check for new appointments every 10 seconds
-    setInterval(async () => {
-      try {
-        const res = await fetch('/doctor/api/appointments/count');
-        const data = await res.json();
-        
-        if (data.count > currentApptCount) {
-          // If a toast doesn't already exist, create one
-          if (!document.getElementById('refresh-toast')) {
-            const toast = document.createElement('div');
-            toast.id = 'refresh-toast';
-            // Modern, vibrant design for the toast to match premium aesthetics
-            toast.style.cssText = "position:fixed; bottom:30px; right:30px; background:linear-gradient(135deg, #00C6FF, #0072FF); color:white; padding:16px 24px; border-radius:12px; cursor:pointer; box-shadow:0 10px 25px rgba(0,114,255,0.3); z-index:9999; font-family:'Inter', sans-serif; font-weight:600; display:flex; align-items:center; gap:12px; animation: slideInUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);";
-            toast.innerHTML = `<span style="font-size:20px;">🔔</span> <span>New appointment! Click to refresh</span>`;
-            
-            // Hover effect using events
-            toast.onmouseenter = () => toast.style.transform = 'translateY(-3px)';
-            toast.onmouseleave = () => toast.style.transform = 'translateY(0)';
-            toast.style.transition = 'transform 0.2s';
-            
-            toast.onclick = () => window.location.reload();
-            document.body.appendChild(toast);
-
-            // Add animation keyframes
-            if (!document.getElementById('toast-keyframes')) {
-              const style = document.createElement('style');
-              style.id = 'toast-keyframes';
-              style.innerHTML = "@keyframes slideInUp { from { transform: translateY(100px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }";
-              document.head.appendChild(style);
-            }
-          }
-        }
-      } catch (err) {
-         console.error('Failed to check for new appointments', err);
-      }
-    }, 10000);
   </script>
 </body>
 </html>

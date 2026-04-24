@@ -158,6 +158,29 @@ router.get('/reports', requireDoctor, async (req, res) => {
   }
 });
 
+router.post('/report/delete/:id', requireDoctor, async (req, res) => {
+  try {
+    await Report.deleteOne({ _id: req.params.id, doctorId: req.doctor.id });
+  } catch (err) {
+    console.error(err);
+  }
+  res.redirect('/doctor/reports');
+});
+
+router.post('/appointment/delete/:id', requireDoctor, async (req, res) => {
+  try {
+    // Doctors can delete records that are cancelled or completed
+    await Appointment.deleteOne({ 
+      _id: req.params.id, 
+      doctorId: req.doctor.id,
+      status: { $in: ['Cancelled', 'Completed'] }
+    });
+  } catch (err) {
+    console.error(err);
+  }
+  res.redirect('/doctor/dashboard');
+});
+
 router.get('/api/appointments/count', requireDoctor, async (req, res) => {
   try {
     const count = await Appointment.countDocuments({ doctorId: req.doctor.id });

@@ -1,50 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Uploaded Reports – MediConnect</title>
   <link rel="stylesheet" href="/css/style.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
+  <!-- Doctor Navbar (Floating Capsule) -->
   <nav class="navbar doctor-navbar">
     <div class="nav-container">
       <a class="nav-brand" href="/doctor/dashboard">
-        <span class="brand-icon">🏥</span> MediConnect <span class="portal-badge">Doctor Portal</span>
+        <i data-lucide="activity" class="brand-icon"></i> MediConnect <span class="portal-badge" style="background: var(--primary); color: white;">Doctor Portal</span>
       </a>
       <ul class="nav-links">
         <li><a href="/doctor/dashboard">Dashboard</a></li>
-        <li><a href="/doctor/reports" class="active">Uploaded Reports</a></li>
-        <li><a href="/doctor/logout" class="btn-nav-logout">Logout (<%= doctor.name.split(' ').slice(0,2).join(' ') %>)</a></li>
+        <li><a href="/doctor/reports" class="active">Reports</a></li>
+        <li><a href="/doctor/logout" class="btn-nav-logout" style="border-radius: var(--radius-pill); padding: 0.5rem 1.2rem;">Logout</a></li>
       </ul>
     </div>
   </nav>
 
   <div class="page-container">
-    <div class="page-header">
-      <h1>📋 Reports You've Uploaded</h1>
-      <p>All medical reports uploaded for your patients.</p>
+    <div class="page-header reveal">
+      <h1><i data-lucide="clipboard-list" style="vertical-align:middle; margin-right:8px;"></i> Uploaded Reports</h1>
+      <p>A complete history of all medical reports you've shared with patients.</p>
     </div>
 
     <% if (reports.length === 0) { %>
-      <div class="empty-state">
-        <p>You haven't uploaded any reports yet. Go to <a href="/doctor/dashboard">Dashboard</a> to upload reports for patients.</p>
+      <div class="empty-state reveal">
+        <i data-lucide="file-x" style="width:48px; height:48px; margin-bottom:1rem; opacity:0.3;"></i>
+        <p>You haven't uploaded any reports yet. Go to <a href="/doctor/dashboard">Dashboard</a> to begin.</p>
       </div>
     <% } else { %>
       <div class="reports-list">
         <% reports.slice().reverse().forEach(r => { %>
-          <div class="report-card">
+          <div class="report-card reveal">
             <div class="report-icon">
-              <% if (r.filename.match(/\.(jpg|jpeg|png)$/i)) { %>🖼️<% } else { %>📄<% } %>
+              <% if (r.filename.match(/\.(jpg|jpeg|png)$/i)) { %><i data-lucide="image"></i><% } else { %><i data-lucide="file-text"></i><% } %>
             </div>
             <div class="report-details">
               <strong><%= r.originalName %></strong>
               <span>Patient: <strong><%= r.patientName %></strong></span>
-              <% if (r.notes) { %><small>📝 <%= r.notes %></small><% } %>
-              <small>🕐 Uploaded <%= new Date(r.uploadedAt).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}) %></small>
+              <small><i data-lucide="calendar" style="width:12px;"></i> Uploaded <%= new Date(r.uploadedAt).toLocaleDateString('en-IN') %></small>
             </div>
-            <a href="<%= r.fileUrl %>" target="_blank" class="btn-download">
-              <% if (r.filename.match(/\.(jpg|jpeg|png)$/i)) { %>🔍 View<% } else { %>⬇ Download<% } %>
-            </a>
+            <div style="display: flex; gap: 8px;">
+              <a href="<%= r.fileUrl %>" target="_blank" class="btn-download" title="View/Download">
+                <i data-lucide="external-link"></i>
+              </a>
+              <form action="/doctor/report/delete/<%= r.id %>" method="POST" style="margin:0;">
+                <button type="submit" class="btn-download" style="background: var(--danger-light); color: var(--danger);" title="Delete Report" onclick="return confirm('Delete this report? This action cannot be undone.');">
+                  <i data-lucide="trash-2"></i>
+                </button>
+              </form>
+            </div>
           </div>
         <% }); %>
       </div>
@@ -52,7 +62,24 @@
   </div>
 
   <footer class="footer">
-    <div class="footer-bottom"><p>© 2024 MediConnect Doctor Portal.</p></div>
+    <div class="footer-bottom"><p>© 2026 MediConnect Doctor Portal.</p></div>
   </footer>
+
+  <script>
+    const reveal = () => {
+      const reveals = document.querySelectorAll('.reveal');
+      reveals.forEach(el => {
+        const windowHeight = window.innerHeight;
+        const revealTop = el.getBoundingClientRect().top;
+        if (revealTop < windowHeight - 80) el.classList.add('active');
+      });
+    };
+    window.addEventListener('scroll', reveal);
+    window.addEventListener('load', reveal);
+    document.addEventListener('DOMContentLoaded', () => {
+      if (window.lucide) lucide.createIcons();
+      setTimeout(reveal, 100);
+    });
+  </script>
 </body>
 </html>

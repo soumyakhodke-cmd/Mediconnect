@@ -1,24 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Appointments – MediConnect</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Health Dashboard – MediConnect</title>
   <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
   <%- include('partials/navbar') %>
+
   <div class="page-container">
     <div class="page-header">
       <h1>My Health Dashboard</h1>
-      <p>Track your appointments and access your medical reports.</p>
+      <p>Welcome back, <%= user.name.split(' ')[0] %>. Here's your health summary.</p>
     </div>
 
-    <!-- ── Appointments ── -->
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+      <a href="/appointments/book" class="action-card">
+        <div class="action-icon"><i data-lucide="plus-circle"></i></div>
+        <div class="action-text"><strong>Book New</strong><span>Schedule a visit</span></div>
+      </a>
+      <a href="/hospitals" class="action-card">
+        <div class="action-icon"><i data-lucide="building-2"></i></div>
+        <div class="action-text"><strong>Hospitals</strong><span>Find care near you</span></div>
+      </a>
+      <a href="#reports" class="action-card">
+        <div class="action-icon"><i data-lucide="file-text"></i></div>
+        <div class="action-text"><strong>Health Vault</strong><span>View <%= reports.length %> reports</span></div>
+      </a>
+    </div>
+
+    <% 
+      // Find the next upcoming confirmed appointment
+      const confirmedAppts = appointments.filter(a => a.status === 'Confirmed');
+      const nextAppt = confirmedAppts.length > 0 ? confirmedAppts[0] : null; 
+    %>
+
+    <% if (nextAppt) { %>
+      <div class="featured-appt-card">
+        <div class="featured-appt-info">
+          <h2><i data-lucide="calendar" style="width:18px; vertical-align:middle;"></i> Next Appointment</h2>
+          <div class="featured-appt-details">
+            <h3><%= nextAppt.doctorName %></h3>
+            <p><i data-lucide="clock" style="width:18px;"></i> <%= nextAppt.date %> at <%= nextAppt.time %></p>
+            <p><i data-lucide="map-pin" style="width:18px;"></i> <%= nextAppt.hospital %></p>
+          </div>
+        </div>
+        <div class="featured-appt-badge">
+          Confirmed
+        </div>
+      </div>
+    <% } %>
+
+    <!-- Appointments Section -->
     <section class="section">
-      <h2>📅 My Appointments</h2>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h2 style="margin-bottom:0;"><i data-lucide="calendar-range" style="vertical-align:middle; margin-right:8px;"></i> Appointments</h2>
+        <a href="/appointments/book" class="btn-sm"><i data-lucide="plus" style="width:14px;"></i> New</a>
+      </div>
+
       <% if (appointments.length === 0) { %>
         <div class="empty-state">
-          <p>No appointments yet. <a href="/appointments/book">Book your first appointment →</a></p>
+          <i data-lucide="calendar-x" style="width:48px; height:48px; margin-bottom:1rem; opacity:0.3;"></i>
+          <p>No appointments scheduled yet. <a href="/appointments/book">Book your first one →</a></p>
         </div>
       <% } else { %>
         <div class="appt-list">
@@ -29,15 +74,22 @@
                 <div class="appt-details">
                   <strong><%= a.doctorName %></strong>
                   <span><%= a.specialty %> · <%= a.hospital %></span>
-                  <small>📅 <%= a.date %> at <%= a.time %></small>
-                  <% if (a.reason) { %><small>📝 <%= a.reason %></small><% } %>
+                  <small><i data-lucide="calendar" style="width:12px;"></i> <%= a.date %> at <%= a.time %></small>
                 </div>
               </div>
-              <div style="display: flex; gap: 10px; align-items: center;">
+              <div style="display: flex; gap: 12px; align-items: center;">
                 <div class="appt-status status-<%= a.status.toLowerCase() %>"><%= a.status %></div>
                 <% if (a.status === 'Pending') { %>
                   <form action="/appointments/cancel/<%= a.id %>" method="POST" style="margin:0;">
-                    <button type="submit" class="btn-download" style="background:#dc3545; border:none; padding: 4px 8px; font-size:0.8rem; cursor:pointer;" onclick="return confirm('Are you sure you want to cancel this appointment?');">🗑 Cancel</button>
+                    <button type="submit" class="btn-nav-logout" style="border:none; padding: 6px 12px; cursor:pointer;" title="Cancel Booking" onclick="return confirm('Cancel this booking?');">
+                      <i data-lucide="x-circle" style="width:14px;"></i>
+                    </button>
+                  </form>
+                <% } else if (['Cancelled', 'Completed'].includes(a.status)) { %>
+                  <form action="/appointments/delete/<%= a.id %>" method="POST" style="margin:0;">
+                    <button type="submit" class="btn-nav-logout" style="border:none; padding: 6px 12px; cursor:pointer; background: var(--gray-100); color: var(--gray-700);" title="Remove Record" onclick="return confirm('Delete this visit from your history?');">
+                      <i data-lucide="trash-2" style="width:14px;"></i>
+                    </button>
                   </form>
                 <% } %>
               </div>
@@ -47,32 +99,32 @@
       <% } %>
     </section>
 
-    <!-- ── Medical Reports ── -->
-    <section class="section">
-      <h2>📋 My Medical Reports</h2>
+    <!-- Reports Section -->
+    <section id="reports" class="section">
+      <h2 style="margin-bottom: 1.5rem;"><i data-lucide="files" style="vertical-align:middle; margin-right:8px;"></i> Medical Reports</h2>
       <% if (reports.length === 0) { %>
         <div class="empty-state">
-          <p>No reports uploaded yet. Your doctor will upload reports after your appointment.</p>
+          <i data-lucide="file-question" style="width:48px; height:48px; margin-bottom:1rem; opacity:0.3;"></i>
+          <p>No reports uploaded yet. Your doctor will upload reports here.</p>
         </div>
       <% } else { %>
         <div class="reports-list">
           <% reports.slice().reverse().forEach(r => { %>
             <div class="report-card">
               <div class="report-icon">
-                <% if (r.filename.match(/\.(jpg|jpeg|png)$/i)) { %>🖼️<% } else { %>📄<% } %>
+                <% if (r.filename.match(/\.(jpg|jpeg|png)$/i)) { %><i data-lucide="image"></i><% } else { %><i data-lucide="file-text"></i><% } %>
               </div>
               <div class="report-details">
                 <strong><%= r.originalName %></strong>
-                <span>Uploaded by <strong><%= r.doctorName %></strong> (<%= r.specialty %>)</span>
-                <% if (r.notes) { %><small>📝 <%= r.notes %></small><% } %>
-                <small>🕐 <%= new Date(r.uploadedAt).toLocaleDateString('en-IN', {day:'numeric',month:'short',year:'numeric'}) %></small>
+                <span>By <strong><%= r.doctorName %></strong></span>
+                <small><i data-lucide="calendar" style="width:12px;"></i> <%= new Date(r.uploadedAt).toLocaleDateString('en-IN') %></small>
               </div>
-              <div style="display: flex; gap: 10px; flex-direction: column;">
-                <a href="<%= r.fileUrl %>" target="_blank" class="btn-download">
-                  <% if (r.filename.match(/\.(jpg|jpeg|png)$/i)) { %>🔍 View<% } else { %>⬇ Download<% } %>
+              <div style="display: flex; gap: 8px;">
+                <a href="<%= r.fileUrl %>" target="_blank" class="btn-download" title="Download">
+                  <i data-lucide="download"></i>
                 </a>
-                <a href="mailto:?subject=My Medical Report&body=Here is my medical report uploaded by <%= r.doctorName %>: http://localhost:3000<%= r.fileUrl %>" class="btn-download" style="background: #25D366; color: white; border: none;">
-                  📤 Share
+                <a href="mailto:?subject=Medical Report&body=Report: <%= r.fileUrl %>" class="btn-download" style="background: var(--success-light); color: var(--success);" title="Share">
+                  <i data-lucide="share-2"></i>
                 </a>
               </div>
             </div>
@@ -80,11 +132,16 @@
         </div>
       <% } %>
     </section>
-
-    <div class="fab-area">
-      <a href="/appointments/book" class="btn-primary">+ Book New Appointment</a>
-    </div>
   </div>
+
   <%- include('partials/footer') %>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (window.lucide) {
+        lucide.createIcons();
+      }
+    });
+  </script>
 </body>
 </html>

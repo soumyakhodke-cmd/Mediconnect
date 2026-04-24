@@ -1,57 +1,101 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MediConnect – Home</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MediConnect – Ultra Healthcare</title>
   <link rel="stylesheet" href="/css/style.css">
+  <style>
+    /* Additional Floating Effects */
+    .floating-container {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+    .float-icon {
+      position: absolute;
+      opacity: 0.15;
+      animation: float 6s infinite ease-in-out;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+  </style>
 </head>
 <body>
   <%- include('partials/navbar') %>
 
-  <section class="hero">
-    <div class="hero-content">
-      <h1>Your Health, <span class="highlight">Our Priority</span></h1>
-      <p>Book appointments with top doctors, manage your health records, and stay on top of your wellness journey — all in one place.</p>
-      <div class="hero-buttons">
+  <section class="hero" style="text-align: center; flex-direction: column; padding-top: 10rem;">
+    <div class="floating-container">
+      <i data-lucide="heart" class="float-icon" style="top: 20%; left: 10%; width: 40px;"></i>
+      <i data-lucide="stethoscope" class="float-icon" style="top: 40%; right: 15%; width: 50px; animation-delay: 1s;"></i>
+      <i data-lucide="pill" class="float-icon" style="bottom: 20%; left: 20%; width: 30px; animation-delay: 2s;"></i>
+    </div>
+
+    <div class="hero-content" style="max-width: 800px;">
+      <h1 class="reveal">Better Care for a <span class="highlight">Better Life</span></h1>
+      <p class="reveal">Welcome to the future of healthcare. Experience a seamless, attractive, and lightning-fast way to manage your medical journey.</p>
+      <div class="hero-buttons reveal" style="justify-content: center;">
         <% if (user) { %>
-          <a href="/appointments/book" class="btn-primary">Book Appointment</a>
-          <a href="/appointments/my"   class="btn-secondary">My Appointments</a>
+          <a href="/appointments/book" class="btn-primary">Book Now</a>
+          <a href="/appointments/my"   class="btn-secondary">Dashboard</a>
         <% } else { %>
           <a href="/auth/register" class="btn-primary">Get Started</a>
-          <a href="/auth/login"    class="btn-secondary">Patient Login</a>
+          <a href="/auth/login"    class="btn-secondary">Patient Portal</a>
         <% } %>
       </div>
     </div>
-    <div class="hero-image">🏥</div>
   </section>
 
   <section class="features">
-    <h2>Why Choose MediConnect?</h2>
+    <h2 class="reveal">Smart Features</h2>
     <div class="features-grid">
-      <div class="feature-card">
-        <div class="feature-icon">📅</div>
-        <h3>Easy Booking</h3>
-        <p>Schedule appointments with specialists in seconds, anytime, anywhere.</p>
+      <div class="feature-card reveal">
+        <div class="feature-icon-wrapper">
+          <i data-lucide="sparkles"></i>
+        </div>
+        <h3>One-Tap Booking</h3>
+        <p>A beautiful and intuitive interface designed to save you time and effort.</p>
       </div>
-      <div class="feature-card">
-        <div class="feature-icon">📋</div>
-        <h3>Medical Reports</h3>
-        <p>Access your lab results and reports uploaded directly by your doctor.</p>
+      <div class="feature-card reveal">
+        <div class="feature-icon-wrapper">
+          <i data-lucide="cloud-lightning"></i>
+        </div>
+        <h3>Instant Access</h3>
+        <p>Access your medical reports and history instantly on our high-performance cloud.</p>
       </div>
-      <div class="feature-card">
-        <div class="feature-icon">🩺</div>
-        <h3>Top Doctors</h3>
-        <p>Connect with verified specialists from leading hospitals across India.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">🔒</div>
-        <h3>Secure & Private</h3>
-        <p>Your health data is safe with role-based access for patients and doctors.</p>
+      <div class="feature-card reveal">
+        <div class="feature-icon-wrapper">
+          <i data-lucide="user-check"></i>
+        </div>
+        <h3>Top Tier Doctors</h3>
+        <p>Hand-picked specialists from the nation's most prestigious hospitals.</p>
       </div>
     </div>
   </section>
 
   <%- include('partials/footer') %>
-  <script src="/js/main.js"></script>
+  
+  <script>
+    const reveal = () => {
+      const reveals = document.querySelectorAll('.reveal');
+      reveals.forEach(el => {
+        const windowHeight = window.innerHeight;
+        const revealTop = el.getBoundingClientRect().top;
+        if (revealTop < windowHeight - 80) el.classList.add('active');
+      });
+    };
+
+    window.addEventListener('scroll', reveal);
+    window.addEventListener('load', reveal);
+
+    document.addEventListener('DOMContentLoaded', () => {
+      if (window.lucide) lucide.createIcons();
+      setTimeout(reveal, 100);
+    });
+  </script>
 </body>
 </html>

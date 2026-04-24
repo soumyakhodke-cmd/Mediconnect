@@ -1,21 +1,24 @@
+<script src="https://unpkg.com/lucide@latest"></script>
+
 <nav class="navbar">
   <div class="nav-container">
     <a class="nav-brand" href="/">
-      <span class="brand-icon">🏥</span> MediConnect
+      <i data-lucide="activity" class="brand-icon" style="vertical-align: middle; margin-right: 4px;"></i> MediConnect
     </a>
     <ul class="nav-links">
       <li><a href="/">Home</a></li>
       <li><a href="/hospitals">Hospitals</a></li>
-      <li><a href="/about">About</a></li>
       <% if (user && user.role === 'patient') { %>
-        <li><a href="/appointments/book">Book Appointment</a></li>
-        <li><a href="/appointments/my">My Appointments</a></li>
-        <li><a href="/auth/logout" class="btn-nav-logout">Logout (<%= user.name.split(' ')[0] %>)</a></li>
+        <li><a href="/appointments/my">Dashboard</a></li>
+        <li><a href="/auth/logout" class="btn-nav-logout" style="border-radius: var(--radius-pill); padding: 0.5rem 1.2rem;">Logout</a></li>
       <% } else if (!user) { %>
-        <li><a href="/auth/login" class="btn-nav">Patient Login</a></li>
-        <li><a href="/auth/register" class="btn-nav-outline">Register</a></li>
-        <li><a href="/doctor/login" class="btn-nav-doctor">🩺 Doctor Login</a></li>
+        <li><a href="/auth/login">Login</a></li>
+        <li><a href="/auth/register" class="btn-nav">Join Now</a></li>
       <% } %>
     </ul>
   </div>
 </nav>
+
+<script>
+  lucide.createIcons();
+</script>
